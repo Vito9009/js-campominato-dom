@@ -1,4 +1,5 @@
 /*
+
 PRIMA PARTE
 
 L’utente indica un livello di difficoltà in base al quale viene generata una griglia di gioco quadrata, in cui ogni cella contiene un numero tra quelli compresi in un range:
@@ -28,6 +29,7 @@ Ad esempio:
 Di cosa ho bisogno per generare i numeri?
 Proviamo sempre prima con dei console.log() per capire se stiamo ricevendo i dati giusti.
 Le validazioni e i controlli possiamo farli anche in un secondo momento.
+
 */
 
 let play = document.getElementById("play"); // Variabile tasto play
@@ -36,11 +38,13 @@ play.addEventListener ("click", function(){ // evento al click del tasto play
     let selectLevel = document.getElementById("difficulty-level").value; // variabile per il select
     let gridCreator = document.getElementById("grid"); // variabile per selezionare il contenitote per la creazione della griglia di gioco
     gridCreator.innerHTML = ""; // Elimina griglia precedente prima di creare la nuova griglia dopo il click del pulsante play
+    lose.innerHTML = "";
+    let bombsArray = []; // Array bombe
 
     if (selectLevel == "easy"){ // Se seleziono il livello easy
         for(let i=1; i<=100; i++){
             gridCreator.innerHTML += `
-            <div class="box-ten clickedBox">
+            <div class="box-ten clickedBox bomb">
             ${i}
             </div>
             `;
@@ -48,7 +52,7 @@ play.addEventListener ("click", function(){ // evento al click del tasto play
     }else if (selectLevel == "medium"){ // Se seleziono il livello medium
         for(let i=1; i<=81; i++){
             gridCreator.innerHTML += `
-            <div class="box-nine clickedBox">
+            <div class="box-nine clickedBox bomb">
             ${i}
             </div>
             `;
@@ -56,7 +60,7 @@ play.addEventListener ("click", function(){ // evento al click del tasto play
     }else if (selectLevel == "hard"){ // Se seleziono il livello hard
         for(let i=1; i<=49; i++){
             gridCreator.innerHTML += `
-            <div class="box-seven clickedBox">
+            <div class="box-seven clickedBox bomb">
                 ${i}
                 </div>
                 `;
@@ -73,5 +77,49 @@ play.addEventListener ("click", function(){ // evento al click del tasto play
         }
         )
     }
+
+let bomb = document.querySelectorAll(".bomb");
+
+creatorBombs();
+
+function creatorBombs() {   // Funzione per la creazione delle bombe
+    for (let i=0; i<16; i++) {
+        let bombsRandom = Math.floor(Math.random() * bomb.length +1);   // Variabile con numeri random necessaria per la creazione delle bombe
+        if (bombsArray.includes(bombsRandom)==true){    // Tramite if ed else chiedo di inserire il numero random nella bombArray se non è presente o di ripetere il giro per trovare un nuovo numero da inserire nel caso in cui quello "estratto" sia già presente
+            i--;
+        }else{
+            bombsArray.push(bombsRandom);
+        }
+    }
+} console.log(bombsArray);
+
+    for (let i=0; i < bomb.length; i++){
+        bomb[i].addEventListener("click", function() {
+            let clickedNumber = parseInt(this.innerHTML);   // Variabile con il numero cliccato
+
+            if (bombsArray.includes(clickedNumber)==true) { // Se il numero cliccato è presente nella bombsArray la casella diventa rossa, altrimenti diventa blu
+                this.classList.add("red-box");
+                boxBomb();
+            }else {
+                this.classList.add("click-colored-box");
+            }
+        });
+
+        function boxBomb(){
+            for (let i=0; i < bomb.length; i++){
+                let globalClickedNumber = parseInt(bomb[i].innerHTML);
+                
+                if (bombsArray.includes(globalClickedNumber)==true) {   // Se clicco un numero presente nell'array tutti i box contenenti i numeri in esso presenti diventano rossi e gli altri diventano verdi
+                    bomb[i].classList.add("red-box");
+                    lose.innerHTML=("💣 BOOOOM!!!💣<br>Hai PERSO!")
+                }else {
+                    bomb[i].classList.add("green-box");
+                }
+            }
+        }
+    }
 })
 
+/*
+AGGIUNGERE MESSAGGIO IN CASO DI VITTORIA
+*/
