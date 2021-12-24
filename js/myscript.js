@@ -91,7 +91,7 @@ function creatorBombs() {   // Funzione per la creazione delle bombe
             bombsArray.push(bombsRandom);
         }
     }
-} console.log(bombsArray);
+} //console.log(bombsArray);
 
     for (let i=0; i < bomb.length; i++){
         bomb[i].addEventListener("click", function() {
